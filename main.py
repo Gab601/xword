@@ -134,23 +134,26 @@ if __name__ == "__main__":
     #parse command line arguments
     parser = argparse.ArgumentParser(description='Generates small crosswords of a given size.')
     parser.add_argument('size', type=int, help='Overall dimension of crossword board.')
-    parser.add_argument("-m", "--min", type=int, help="Minimum allowable word size")
-    parser.add_argument("-f", "--first", type=str, help="First word of crossword")
+    parser.add_argument("-m", "--min", type=int, help="Minimum allowable word size. Default equal to size argument.")
+    parser.add_argument("-f", "--first", type=str, help="First word of crossword. Default none.")
+    parser.add_argument("-w", "--words", type=str, help="Path to txt list of words to use. Default \"./words.txt\"")
     args = parser.parse_args()
+
     size = args.size
     min_size = size
     if args.min:
         min_size = args.min
-    hint = None
-    if args.first:
-        hint = args.first
+
 
     #get word list
-    filename = "./words.txt"
+    filename = "./words.txt" if not args.words else args.words
     word_starts, word_starts_list = get_word_starts(filename, size, min_size)
 
     #generate board, using hint if available
     board = Crossword(size)
+    hint = None
+    if args.first:
+        hint = args.first
     if hint:
         for j in range(size):
             board.board[0][j] = hint[j]
